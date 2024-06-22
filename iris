@@ -1,0 +1,130 @@
+Iris Flowers Classification ML Project
+
+LGMVIP-DataScience-Task-1
+
+Author - Narendra Chatterjee
+add Codeadd Markdown
+#importing required libraries
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import scikitplot as skplt
+from sklearn.preprocessing import *
+add Codeadd Markdown
+#importing the dataset
+df = pd.read_csv('/kaggle/input/iris/Iris.csv')
+add Codeadd Markdown
+df.columns
+add Codeadd Markdown
+df.head()
+add Codeadd Markdown
+df.tail()
+add Codeadd Markdown
+df.shape
+add Codeadd Markdown
+Observations : The dataset have 150 rows and 5 columns
+
+add Codeadd Markdown
+df.isnull()
+add Codeadd Markdown
+df.isnull().sum()
+add Codeadd Markdown
+Observations : No null values in the dataset
+
+add Codeadd Markdown
+df.describe()
+add Codeadd Markdown
+df['Species'].unique()
+add Codeadd Markdown
+Observations : The dataset consists of 3 different species
+
+add Codeadd Markdown
+df['Species'].value_counts()
+add Codeadd Markdown
+df.max()
+add Codeadd Markdown
+df.min()
+add Codeadd Markdown
+Visualization 
+add Codeadd Markdown
+sns.pairplot(df,hue = "Species")
+add Codeadd Markdown
+The above pairplot shows the relationship between the different attributes
+
+add Codeadd Markdown
+Data Preprocessing
+add Codeadd Markdown
+plt.figure(figsize = (10,7))
+sns.heatmap(df.corr(),annot = True,cmap = 'seismic')
+plt.show()
+add Codeadd Markdown
+le = LabelEncoder()
+add Codeadd Markdown
+As the class attribute is of obeject type, we are using label encoder to convert it into int form such that the machine learning model can understand the data and work appropriately
+
+add Codeadd Markdown
+df['Species'] = le.fit_transform(df['Species'])
+df.head()
+add Codeadd Markdown
+X = df.drop(columns = ['Species'])
+y = df['Species']
+X[:5]
+add Codeadd Markdown
+y[:5]
+add Codeadd Markdown
+Machine Learning
+add Codeadd Markdown
+Using Machine Learning Models : Logistic Regression, KNN, SVM , Naive Bayes, Decision Tree and Random Forest.
+Spliting the data into 70-30 ratio
+
+add Codeadd Markdown
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size = 0.30 , random_state = 1)
+add Codeadd Markdown
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.naive_bayes import GaussianNB
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import confusion_matrix, accuracy_score, roc_curve, roc_auc_score  
+​
+add Codeadd Markdown
+lr = LogisticRegression()
+knn = KNeighborsClassifier()
+svm = SVC()
+gnb = GaussianNB()
+dt = DecisionTreeClassifier()
+rf = RandomForestClassifier()
+add Codeadd Markdown
+models = [lr,knn,svm,gnb,dt,rf]
+scores = []
+​
+for model in models:
+    model.fit(X_train, y_train)
+    predict = model.predict(X_test)
+    scores.append(accuracy_score(y_test, predict))
+    print()
+    print("Accuracy of model "+type(model).__name__+" : ",accuracy_score(y_test, predict))
+add Codeadd Markdown
+for model in models:
+    model.fit(X_train, y_train)
+    predict = model.predict(X_test)
+    scores.append(accuracy_score(y_test, predict))
+    print()
+    print("Accuracy of model "+type(model).__name__+" : ",accuracy_score(y_test, predict))
+    cnf_matrix = confusion_matrix(y_test,predict)
+    
+    fig = plt.figure(figsize = (15,6))
+    ax1 = fig.add_subplot(1,2,1)
+    ax1 = sns.heatmap(pd.DataFrame(cnf_matrix), annot = True, cmap = 'Blues', fmt = 'd')
+    bottom, top = ax1.get_ylim()
+    ax1.set_ylim(bottom + 0.5, top - 0.5)
+    plt.xlabel('Predicted')
+    plt.ylabel('Expected')
+    plt.legend(loc=4)
+    plt.show()
+add Codeadd Markdown
+Observation : As the Accuracy of LogisticRegression, KNeighborsClassifier & SVC is 1.0
+we can use either of these for further predictions.
